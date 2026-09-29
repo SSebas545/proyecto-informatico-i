@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Patismos - Catálogo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .logo span { color: #667eea; }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #edf2f7;
+            border-radius: 25px;
+            padding: 10px 20px;
+            width: 350px;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .search-box input::placeholder { color: #a0aec0; }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .cart-btn {
+            position: relative;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e53e3e;
+            color: white;
+            font-size: 11px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-container {
+            display: flex;
+            padding: 30px;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .content {
+            flex: 1;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .book-cover {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .book-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        .book-author {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+        .book-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .book-stock {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .in-stock { background: #c6f6d5; color: #276749; }
+        .out-stock { background: #fed7d7; color: #c53030; }
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+        .sidebar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .category-item:hover { background: #edf2f7; }
+        .category-item.active {
+            background: #ebf4ff;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .category-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .category-item.active .category-checkbox {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #4a5568;
+            cursor: pointer;
+        }
+        .filter-radio {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .filter-option input:checked + .filter-radio {
+            border-color: #667eea;
+        }
+        .filter-option input:checked + .filter-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+        .filter-option input { display: none; }
+        @media (max-width: 1024px) {
+            .books-grid { grid-template-columns: repeat(2, 1fr); }
+            .sidebar { width: 240px; }
+        }
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .books-grid { grid-template-columns: 1fr; }
+            .search-box { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">Los <span>Patismos</span></div>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Buscar libro, autor...">
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-item">👤 Comprador</div>
+            <button class="cart-btn">
+                🛒 Mi carrito
+                <span class="cart-badge">3</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="content">
+            <h2 class="section-title">Catálogo de Libros</h2>
+            <div class="books-grid">
+                <div class="book-card">
+                    <div class="book-cover">📖</div>
+                    <div class="book-title">El Señor de los Anillos</div>
+                    <div class="book-author">J.R.R. Tolkien</div>
+                    <div class="book-price">$2.500</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📚</div>
+                    <div class="book-title">Cien Años de Soledad</div>
+                    <div class="book-author">Gabriel García Márquez</div>
+                    <div class="book-price">$1.800</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📕</div>
+                    <div class="book-title">1984</div>
+                    <div class="book-author">George Orwell</div>
+                    <div class="book-price">$1.500</div>
+                    <span class="book-stock out-stock">Sin stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📗</div>
+                    <div class="book-title">El Principito</div>
+                    <div class="book-author">Antoine de Saint-Exupéry</div>
+                    <div class="book-price">$1.200</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📘</div>
+                    <div class="book-title">Don Quijote</div>
+                    <div class="book-author">Miguel de Cervantes</div>
+                    <div class="book-price">$2.000</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📙</div>
+                    <div class="book-title">La Sombra del Viento</div>
+                    <div class="book-author">Carlos Ruiz Zafón</div>
+                    <div class="book-price">$1.900</div>
+                    <span class="book-stock out-stock">Sin stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📓</div>
+                    <div class="book-title">El Alquimista</div>
+                    <div class="book-author">Paulo Coelho</div>
+                    <div class="book-price">$1.400</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📔</div>
+                    <div class="book-title">Rayuela</div>
+                    <div class="book-author">Julio Cortázar</div>
+                    <div class="book-price">$2.200</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📒</div>
+                    <div class="book-title">Ficciones</div>
+                    <div class="book-author">Jorge Luis Borges</div>
+                    <div class="book-price">$1.700</div>
+                    <span class="book-stock in-stock">En stock</span>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">🛒 Mi Carrito</h3>
+                <button class="cart-btn" style="width: 100%; justify-content: center;">Ver carrito</button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">📂 Categorías</h3>
+                <div class="category-list">
+                    <div class="category-item active">
+                        <div class="category-checkbox">✓</div>
+                        <span>Ficción</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Arte</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Tecnología</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Ingeniería</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Infantil</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Terror</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Deportes</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-checkbox"></div>
+                        <span>Otros</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">🔍 Filtros</h3>
+                <div class="filter-group">
+                    <label class="filter-option">
+                        <input type="radio" name="stock" checked>
+                        <div class="filter-radio"></div>
+                        <span>En stock</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="radio" name="stock">
+                        <div class="filter-radio"></div>
+                        <span>Sin stock</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

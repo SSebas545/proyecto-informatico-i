@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Patismos - Iniciar Sesión</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            width: 900px;
+            max-width: 90%;
+            min-height: 500px;
+            overflow: hidden;
+        }
+        .left-panel {
+            flex: 1;
+            padding: 60px 40px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+        .logo span { color: #667eea; }
+        .tagline {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2d3748;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        .right-panel {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .login-subtitle {
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .role-selector {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+        }
+        .role-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 180px;
+        }
+        .role-card:hover, .role-card.active {
+            border-color: #667eea;
+            background: #ebf4ff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        .role-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .role-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .btn-continue {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-continue:hover {
+            background: #667eea;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .left-panel { padding: 30px; }
+            .right-panel { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">Los <span>Patismos</span></div>
+            <p class="tagline">Accede a miles de libros en formato digital, desde cualquier dispositivo. Estudiá, investigá y descubrí nuevos mundos.</p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <span>Amplio Catálogo</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <span>Acceso Inmediato</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <span>En Cualquier Dispositivo</span>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <h1 class="login-title">Bienvenido</h1>
+            <p class="login-subtitle">Iniciá sesión para continuar</p>
+            <button class="btn-login">INICIAR SESIÓN</button>
+            <div class="role-selector">
+                <div class="role-card active">
+                    <div class="role-icon">👤</div>
+                    <div class="role-name">USUARIO</div>
+                    <button class="btn-continue">CONTINUAR →</button>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">💼</div>
+                    <div class="role-name">GERENTE</div>
+                    <button class="btn-continue">CONTINUAR →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
