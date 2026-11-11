@@ -30,3 +30,7 @@ npm-debug.log*
 # Build files
 dist/
 build/
+
+# Respaldos de .env (tienen la contrasena de la base y el JWT_SECRET)
+.env.bak*
+.env.*.bak*
