@@ -814,6 +814,12 @@ app.put('/api/gerente/cambiar-password', autenticarToken, async (req, res) => {
   }
 });
 
+// Frontend estático (etapa 3). Se sirve desde el mismo origen que la API, así
+// el navegador no necesita CORS ni un segundo servidor. Va después de las
+// rutas /api: una petición a la API nunca cae acá.
+const RUTA_FRONTEND = path.join(__dirname, '..', 'frontend');
+app.use(express.static(RUTA_FRONTEND));
+
 // Middleware de errores. Express responde los errores de parseo del body con
 // su manejador por defecto (HTML y sin log); con esto la API contesta siempre
 // JSON y distingue un body invalido (400) de una falla interna (500).

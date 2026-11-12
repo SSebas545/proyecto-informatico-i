@@ -21,23 +21,29 @@ server/
 - `cors` - CORS habilitado para desarrollo
 - `dotenv` - Manejo de variables de entorno
 
+## Cómo levantar el proyecto
+
+```bash
+cd server
+npm install      # solo la primera vez
+cp .env.example .env   # y completar los valores reales
+npm run seed     # carga 12 libros de ejemplo (idempotente)
+npm start        # API + frontend en http://localhost:3000
+```
+
+Abrir `http://localhost:3000` para la tienda y `http://localhost:3000/admin.html`
+para el panel del gerente (`admin@libreria.com` / `12345678`).
+
 ## Configuración
 
 ### Variables de Entorno (.env)
 
-Crear un archivo `.env` en la carpeta `server/` con:
+Copiar `.env.example` a `.env` en esta carpeta y completar con los valores
+reales. La plantilla trae las claves con valores de mentira a propósito: el
+`.env` verdadero nunca se commitea.
 
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=libreria_db
-DB_PORT=3306
-
-JWT_SECRET=secreto-super-seguro-para-el-proyecto
-PORT=3000
-NODE_ENV=development
-```
+Claves: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`,
+`JWT_SECRET`, `PORT`, `NODE_ENV` y, opcional, `CORS_ORIGIN`.
 
 ### Base de Datos MySQL
 
