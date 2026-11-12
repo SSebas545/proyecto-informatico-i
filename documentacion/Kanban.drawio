@@ -1,0 +1,85 @@
+<mxfile host="app.diagrams.net" modified="2026-10-29T00:00:00.000Z" agent="opencode" version="24.0.0">
+  <diagram name="Kanban - Los Patismos" id="kanban-los-patismos">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Título -->
+        <mxCell id="titulo" value="&lt;b&gt;Kanban — Proyecto Informático I &amp;quot;Los Patismos&amp;quot; — Tercera etapa&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=18;fontColor=#2d3748;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Columnas -->
+        <mxCell id="col_backlog" value="&lt;b&gt;BACKLOG&lt;/b&gt;" style="swimlane;horizontal=0;startSize=40;fillColor=#f7fafc;strokeColor=#718096;fontColor=#2d3748;fontSize=14;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="360" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="col_curso" value="&lt;b&gt;EN CURSO&lt;/b&gt;" style="swimlane;horizontal=0;startSize=40;fillColor=#ebf4ff;strokeColor=#667eea;fontColor=#2d3748;fontSize=14;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="80" width="360" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="col_revision" value="&lt;b&gt;EN REVISIÓN&lt;/b&gt;" style="swimlane;horizontal=0;startSize=40;fillColor=#fffaf0;strokeColor=#dd6b20;fontColor=#2d3748;fontSize=14;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="80" width="360" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="col_hecho" value="&lt;b&gt;HECHO&lt;/b&gt;" style="swimlane;horizontal=0;startSize=40;fillColor=#f0fff4;strokeColor=#38a169;fontColor=#2d3748;fontSize=14;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="80" width="360" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Tarjetas Backlog -->
+        <mxCell id="k01" value="&lt;b&gt;T01&lt;/b&gt; Commitear backend server/&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: —&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="10" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k02" value="&lt;b&gt;T02&lt;/b&gt; Sincronizar assets/ Descargas → GitHub&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: —&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="80" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k03" value="&lt;b&gt;T03&lt;/b&gt; Actualizar AGENTS.md y nota del vault&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: —&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="150" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k04" value="&lt;b&gt;T04&lt;/b&gt; Kanban editable (este archivo + xlsx)&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: —&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="220" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k05" value="&lt;b&gt;T05&lt;/b&gt; CSS base profesional&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: Todos&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="290" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k06" value="&lt;b&gt;T06&lt;/b&gt; JS base (módulos + validación + fetch)&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;Etapa 3 · CU: Todos&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="360" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k07" value="&lt;b&gt;T07&lt;/b&gt; Pantalla Login&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;CU-08, CU-09&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="430" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k08" value="&lt;b&gt;T08&lt;/b&gt; Pantalla Catálogo (piloto)&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;CU-01, CU-02, CU-03, CU-04&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="500" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k09" value="&lt;b&gt;T09&lt;/b&gt; Pantalla Carrito&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;CU-04, CU-05&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="570" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k10" value="&lt;b&gt;T10&lt;/b&gt; Pantalla Checkout / Compra&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;CU-06&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="640" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="k11" value="&lt;b&gt;T11&lt;/b&gt; Pantalla Recomendaciones&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Responsable: [COMPLETAR]&lt;br&gt;CU-07 (backend pendiente)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#718096;align=left;verticalAlign=top;spacing=6;fontSize=12;fontColor=#2d3748;" vertex="1" parent="col_backlog">
+          <mxGeometry x="10" y="710" width="340" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Tarjetas En curso (vacío por ahora) -->
+        <mxCell id="curso_nota" value="Sin tarjetas por ahora." style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontColor=#718096;" vertex="1" parent="col_curso">
+          <mxGeometry x="10" y="10" width="340" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Tarjetas En revisión -->
+        <mxCell id="rev_nota" value="Sin tarjetas por ahora." style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontColor=#718096;" vertex="1" parent="col_revision">
+          <mxGeometry x="10" y="10" width="340" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Tarjetas Hecho -->
+        <mxCell id="hecho_nota" value="Sin tarjetas por ahora." style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontColor=#718096;" vertex="1" parent="col_hecho">
+          <mxGeometry x="10" y="10" width="340" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Nota -->
+        <mxCell id="nota" value="&lt;b&gt;Nota:&lt;/b&gt; la división de tareas por integrante debe completarse con el kanban original de la etapa 1 (imagen). Responsables conocidos: BD → Sebastian Rivero; DER → Santiago Huamani. El resto queda [COMPLETAR]." style="text;html=1;whiteSpace=wrap;strokeColor=#718096;fillColor=#f7fafc;align=left;verticalAlign=top;spacing=8;fontSize=11;fontColor=#2d3748;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="860" width="1500" height="70" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net" modified="2026-10-29T00:00:00.000Z" agent="opencode" version="24.0.0">
+  <diagram name="Modelo ER - Los Patismos" id="er-los-patismos">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ================= ENTIDADES ================= -->
+
+        <!-- usuarios -->
+        <mxCell id="usuarios" value="&lt;b&gt;usuarios&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;nombre VARCHAR(100)&lt;br&gt;email VARCHAR(100) UNIQUE&lt;br&gt;password VARCHAR(255)&lt;br&gt;rol ENUM(usuario, gerente)&lt;br&gt;creado_en TIMESTAMP" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#ebf4ff;strokeColor=#667eea;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="240" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- categorias -->
+        <mxCell id="categorias" value="&lt;b&gt;categorias&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;nombre VARCHAR(50) UNIQUE" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#f0fff4;strokeColor=#38a169;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- libros -->
+        <mxCell id="libros" value="&lt;b&gt;libros&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;titulo VARCHAR(200)&lt;br&gt;autor VARCHAR(100)&lt;br&gt;descripcion TEXT&lt;br&gt;precio DECIMAL(10,2)&lt;br&gt;stock INT&lt;br&gt;categoria_id INT FK&lt;br&gt;creado_en TIMESTAMP" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#f0fff4;strokeColor=#38a169;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="470" width="240" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- carritos -->
+        <mxCell id="carritos" value="&lt;b&gt;carritos&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;usuario_id INT FK&lt;br&gt;creado_en TIMESTAMP" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#ebf4ff;strokeColor=#667eea;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- carrito_items -->
+        <mxCell id="carrito_items" value="&lt;b&gt;carrito_items&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;carrito_id INT FK&lt;br&gt;libro_id INT FK&lt;br&gt;cantidad INT&lt;br&gt;precio DECIMAL(10,2)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#ebf4ff;strokeColor=#667eea;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="240" width="240" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- pedidos -->
+        <mxCell id="pedidos" value="&lt;b&gt;pedidos&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;usuario_id INT FK&lt;br&gt;total DECIMAL(10,2)&lt;br&gt;estado ENUM(pendiente, pagado, cancelado)&lt;br&gt;creado_en TIMESTAMP" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#fffaf0;strokeColor=#dd6b20;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="760" y="40" width="260" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- pedido_items -->
+        <mxCell id="pedido_items" value="&lt;b&gt;pedido_items&lt;/b&gt;&lt;hr&gt;id INT PK&lt;br&gt;pedido_id INT FK&lt;br&gt;libro_id INT FK&lt;br&gt;cantidad INT&lt;br&gt;precio DECIMAL(10,2)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fillColor=#fffaf0;strokeColor=#dd6b20;fontColor=#2d3748;fontSize=12;align=left;verticalAlign=top;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="760" y="260" width="260" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ================= RELACIONES ================= -->
+
+        <!-- categorias 1:N libros -->
+        <mxCell id="rel_cat_lib" value="1:N tiene" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#38a169;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="categorias" target="libros">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- usuarios 1:N carritos -->
+        <mxCell id="rel_usr_car" value="1:N posee" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#667eea;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="usuarios" target="carritos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- carritos 1:N carrito_items -->
+        <mxCell id="rel_car_items" value="1:N contiene" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#667eea;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="carritos" target="carrito_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- libros 1:N carrito_items -->
+        <mxCell id="rel_lib_citems" value="1:N referenciado" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#38a169;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="libros" target="carrito_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- usuarios 1:N pedidos -->
+        <mxCell id="rel_usr_ped" value="1:N realiza" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#dd6b20;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="usuarios" target="pedidos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- pedidos 1:N pedido_items -->
+        <mxCell id="rel_ped_pitems" value="1:N contiene" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#dd6b20;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="pedidos" target="pedido_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- libros 1:N pedido_items -->
+        <mxCell id="rel_lib_pitems" value="1:N referenciado" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#38a169;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="libros" target="pedido_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================= NOTAS ================= -->
+
+        <mxCell id="nota_pendientes" value="&lt;b&gt;PENDIENTE — revisar contra los 17 CU&lt;/b&gt;&lt;br&gt;&lt;br&gt;• CU-07 (Recomendaciones): no hay tabla; se deriva de historial de pedidos.&lt;br&gt;• CU-17 (Alertas stock bajo): se deriva de libros.stock (&amp;lt; 5).&lt;br&gt;• Préstamos: la ficha del cliente menciona venta y préstamo, pero los 17 CU solo cubren venta.&lt;br&gt;&lt;br&gt;&lt;i&gt;Base: esquema real de server/database.js.&lt;/i&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#e53e3e;fillColor=#fff5f5;align=left;verticalAlign=top;spacing=8;fontSize=11;fontColor=#2d3748;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="420" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nota_leyenda" value="&lt;b&gt;Leyenda&lt;/b&gt;&lt;br&gt;🔵 Usuario / carrito&lt;br&gt;🟢 Catálogo / libros&lt;br&gt;🟠 Pedidos / ventas&lt;br&gt;&lt;br&gt;PK = clave primaria · FK = clave foránea" style="text;html=1;whiteSpace=wrap;strokeColor=#718096;fillColor=#f7fafc;align=left;verticalAlign=top;spacing=8;fontSize=11;fontColor=#2d3748;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="720" width="240" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
