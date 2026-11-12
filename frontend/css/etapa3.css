@@ -1,0 +1,157 @@
+/* Etapa 3 — lo que se agrega sobre los estilos del wireframe.
+   El wireframe (estilos.css) queda intacto: acá van solo estados, diálogos y
+   las piezas que la página funcional necesita y el dibujo no tenía. */
+
+.oculto { display: none !important; }
+
+/* Aviso de estado de la sesión, arriba de la barra */
+.franja-sesion {
+  background: var(--acento);
+  color: var(--papel);
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: .35rem 1rem;
+}
+.franja-sesion a { color: var(--papel); text-decoration: underline; }
+
+/* Diálogos: el wireframe no tenía modales */
+dialog.hoja {
+  border: 1px solid var(--linea);
+  border-radius: 4px;
+  background: var(--papel);
+  color: var(--tinta);
+  padding: 0;
+  width: min(560px, 92vw);
+  max-height: 86vh;
+  overflow: auto;
+  box-shadow: 0 24px 60px rgba(23, 20, 15, .35);
+}
+dialog.hoja::backdrop { background: rgba(23, 20, 15, .55); }
+.hoja-cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem .6rem;
+  border-bottom: 1px solid var(--linea);
+}
+.hoja-cabeza h2 { font-size: 1.15rem; margin: 0; }
+.hoja-cuerpo { padding: 1.2rem 1.4rem; display: grid; gap: .9rem; }
+.hoja-pie {
+  padding: .9rem 1.4rem 1.2rem;
+  display: flex;
+  gap: .6rem;
+  justify-content: flex-end;
+  border-top: 1px solid var(--linea);
+}
+.cerrar-hoja {
+  background: none;
+  border: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--tinta-suave);
+}
+
+/* Carrito funcional */
+.carrito-lista { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
+.carrito-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .2rem .8rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px dashed var(--linea);
+}
+.carrito-item:last-child { border-bottom: 0; }
+.carrito-item strong { font-size: .9rem; }
+.carrito-item small { color: var(--tinta-suave); }
+.carrito-acciones { display: flex; align-items: center; gap: .35rem; }
+.carrito-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  border-top: 2px solid var(--tinta);
+  padding-top: .6rem;
+}
+
+/* Botones chicos para las filas y el carrito */
+.boton-mini {
+  border: 1px solid var(--linea);
+  background: var(--papel-alt);
+  color: var(--tinta);
+  border-radius: 3px;
+  min-width: 1.9rem;
+  height: 1.9rem;
+  padding: 0 .45rem;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.boton-mini:hover { background: var(--papel-hondo); }
+.boton-mini:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Mensajes: un solo lugar para errores y confirmaciones */
+.mensaje {
+  border-left: 3px solid var(--acento);
+  background: var(--papel-alt);
+  padding: .55rem .8rem;
+  font-size: .86rem;
+}
+.mensaje.error { border-color: #8c1c1c; color: #6d1414; }
+.mensaje.ok { border-color: #2f6b3a; color: #24502c; }
+.mensaje:empty { display: none; }
+
+/* Estados de carga y listas vacías */
+.vacio, .cargando {
+  padding: 2.2rem 1rem;
+  text-align: center;
+  color: var(--tinta-tenue);
+  font-size: .9rem;
+}
+
+/* Formularios en rejilla (alta de libro) */
+.form-rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .8rem;
+}
+.form-rejilla .ancho-total { grid-column: 1 / -1; }
+.form-rejilla textarea {
+  font: inherit;
+  padding: .6rem .7rem;
+  border: 1px solid var(--linea);
+  background: var(--papel);
+  color: var(--tinta);
+  border-radius: 3px;
+  resize: vertical;
+  min-height: 3.2rem;
+}
+@media (max-width: 640px) { .form-rejilla { grid-template-columns: 1fr; } }
+
+/* Tabla del gerente: el wireframe tenía .tabla, faltaba el ajuste fino */
+.tabla-scroll { overflow-x: auto; }
+.tabla-admin { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.tabla-admin th, .tabla-admin td {
+  text-align: left;
+  padding: .5rem .6rem;
+  border-bottom: 1px solid var(--linea);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.tabla-admin th {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--tinta-suave);
+}
+.tabla-admin input[type="number"] { width: 4.5rem; }
+
+.insignia-baja { color: #8c1c1c; font-weight: 600; }
+
+/* La sesión del gerente ocupa toda la pantalla, como el wireframe */
+.panel-gerente { max-width: 1180px; margin: 0 auto; padding: 2rem 1.4rem 3rem; }
+.panel-gerente h1 { font-size: 1.6rem; margin: .2rem 0 .4rem; }
+.seccion-admin { margin-top: 2rem; }
+.seccion-admin h2 { font-size: 1.05rem; margin-bottom: .7rem; }

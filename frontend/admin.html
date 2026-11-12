@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Los Patismos — Panel del gerente</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/etapa3.css">
+</head>
+<body>
+
+  <header class="barra">
+    <div class="barra-interior">
+      <a class="marca" href="admin.html">
+        Los <em>Patismos</em>
+        <small>Gestión</small>
+      </a>
+      <div class="barra-derecha">
+        <a class="enlace-barra" href="index.html">Ver la tienda</a>
+        <button class="boton-carrito" id="cerrar-sesion" type="button">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="panel-gerente">
+
+    <span class="volanta">Panel</span>
+    <h1>Resumen del local</h1>
+    <p id="bajada-panel">Cargando datos…</p>
+
+    <div id="mensaje-panel" class="mensaje" role="status" aria-live="polite"></div>
+
+    <!-- Sin sesión de gerente no se muestra nada de gestión -->
+    <section id="bloqueo" class="oculto">
+      <div class="mensaje error">
+        Este panel necesita una sesión de gerente.
+        <a href="index.html">Ingresá desde la tienda</a> con <code>admin@libreria.com</code>.
+      </div>
+    </section>
+
+    <div id="gestion">
+
+      <section class="tarjetas" aria-label="Indicadores">
+        <div class="tarjeta-dato">
+          <span class="etiqueta">Títulos</span>
+          <strong id="stat-libros">—</strong>
+        </div>
+        <div class="tarjeta-dato">
+          <span class="etiqueta">Con stock</span>
+          <strong id="stat-stock">—</strong>
+        </div>
+        <div class="tarjeta-dato">
+          <span class="etiqueta">Sin stock</span>
+          <strong id="stat-sin-stock">—</strong>
+        </div>
+        <div class="tarjeta-dato">
+          <span class="etiqueta">Stock bajo (&lt;5)</span>
+          <strong id="stat-bajo">—</strong>
+        </div>
+        <div class="tarjeta-dato">
+          <span class="etiqueta">Ventas</span>
+          <strong id="stat-ventas">—</strong>
+        </div>
+      </section>
+
+      <section class="seccion-admin">
+        <h2>Alertas de stock bajo</h2>
+        <p class="vacio" id="sin-alertas">No hay alertas.</p>
+        <div class="tabla-scroll">
+          <table class="tabla-admin oculto" id="tabla-alertas">
+            <thead><tr><th>Título</th><th>Autor</th><th>Stock</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="seccion-admin">
+        <h2>Inventario</h2>
+        <p>Editá el stock y guardá la fila. El resto de los datos no se toca.</p>
+        <div class="tabla-scroll">
+          <table class="tabla-admin">
+            <thead>
+              <tr><th>Título</th><th>Autor</th><th>Categoría</th><th>Precio</th><th>Stock</th><th></th></tr>
+            </thead>
+            <tbody id="cuerpo-inventario"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="seccion-admin">
+        <h2>Alta de libro</h2>
+        <div id="mensaje-alta" class="mensaje" role="status" aria-live="polite"></div>
+        <form class="form-rejilla" id="form-libro">
+          <div class="campo"><label for="nuevo-titulo">Título</label><input id="nuevo-titulo" required></div>
+          <div class="campo"><label for="nuevo-autor">Autor</label><input id="nuevo-autor" required></div>
+          <div class="campo"><label for="nuevo-precio">Precio (ARS)</label><input id="nuevo-precio" type="number" min="0" step="1" required></div>
+          <div class="campo"><label for="nuevo-stock">Stock</label><input id="nuevo-stock" type="number" min="0" step="1" value="0" required></div>
+          <div class="campo"><label for="nuevo-categoria">Categoría</label><select id="nuevo-categoria"></select></div>
+          <div class="campo ancho-total"><label for="nuevo-descripcion">Descripción</label>
+            <textarea id="nuevo-descripcion" rows="2"></textarea></div>
+          <div class="acciones-acceso ancho-total">
+            <button class="boton-solido" type="submit">Agregar al catálogo</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="seccion-admin">
+        <h2>Alta de categoría</h2>
+        <div id="mensaje-categoria" class="mensaje" role="status" aria-live="polite"></div>
+        <form class="form-rejilla" id="form-categoria">
+          <div class="campo"><label for="nueva-categoria">Nombre</label><input id="nueva-categoria" required></div>
+          <div class="acciones-acceso">
+            <button class="boton-linea" type="submit">Agregar categoría</button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="pie">
+    <span>Los Patismos · Librería</span>
+    <span>Etapa 3 — gestión con MySQL</span>
+  </footer>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
