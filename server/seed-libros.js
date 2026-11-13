@@ -28,23 +28,24 @@ async function sembrar() {
   let salteados = 0;
 
   for (const libro of LIBROS) {
-    const [existente] = await query('SELECT id FROM libros WHERE titulo = ?', [libro.titulo]);
-    if (existente.length > 0) {
-      salteados += 1;
-      continue;
-    }
-
     const [categoria] = await query('SELECT id FROM categorias WHERE nombre = ?', [libro.categoria]);
     if (categoria.length === 0) {
       console.error(`Categoría desconocida: ${libro.categoria} (libro: ${libro.titulo})`);
       continue;
     }
 
-    await query(
-      'INSERT INTO libros (titulo, autor, descripcion, precio, stock, categoria_id) VALUES (?, ?, ?, ?, ?, ?)',
-      [libro.titulo, libro.autor, libro.descripcion, libro.precio, libro.stock, categoria[0].id]
+    // El chequeo y el INSERT van en la misma sentencia: si dos seeds corren a
+    // la vez, el segundo no encuentra la fila y no la duplica (titulo no tiene
+    // UNIQUE, así que un SELECT + INSERT separado no alcanzaba).
+    const [result] = await query(
+      `INSERT INTO libros (titulo, autor, descripcion, precio, stock, categoria_id)
+       SELECT ?, ?, ?, ?, ?, ? FROM DUAL
+       WHERE NOT EXISTS (SELECT 1 FROM libros WHERE titulo = ?)`,
+      [libro.titulo, libro.autor, libro.descripcion, libro.precio, libro.stock, categoria[0].id, libro.titulo]
     );
-    creados += 1;
+
+    if (result.affectedRows > 0) creados += 1;
+    else salteados += 1;
   }
 
   const [total] = await query('SELECT COUNT(*) AS n FROM libros');

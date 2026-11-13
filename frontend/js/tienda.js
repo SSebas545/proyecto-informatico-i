@@ -32,8 +32,14 @@ function limpiar(elemento) {
 
 // --- catálogo ------------------------------------------------------------
 
+// Cada carga lleva un número: si llega una respuesta vieja después de una más
+// nueva (búsqueda rápida, dos filtros seguidos), se descarta. Sin esto, la
+// grilla podía quedar mostrando resultados de un filtro anterior.
+let peticionActual = 0;
+
 async function cargarLibros() {
   const grilla = $('grilla');
+  const numero = ++peticionActual;
   grilla.innerHTML = '<p class="cargando">Cargando catálogo…</p>';
 
   const params = new URLSearchParams();
@@ -43,9 +49,11 @@ async function cargarLibros() {
 
   try {
     const libros = await pedir(`/api/libros${params.toString() ? `?${params}` : ''}`);
+    if (numero !== peticionActual) return; // llegó tarde: hay una más nueva
     estado.libros = libros;
     pintarLibros();
   } catch (error) {
+    if (numero !== peticionActual) return;
     grilla.innerHTML = '<p class="vacio">No se pudo cargar el catálogo.</p>';
     avisar($('mensaje-catalogo'), error.message);
   }
