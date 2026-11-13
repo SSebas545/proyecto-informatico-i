@@ -1,9 +1,10 @@
 // Panel del gerente: estadísticas, inventario y altas.
 // Cubre CU-10 (gestionar libros), CU-11 (stock), CU-13 (estadísticas),
 // CU-14 (resumen), CU-15 (categorías), CU-16 (restock) y CU-17 (alertas).
-// CU-12 (usuarios) no tiene pantalla todavía: se declara en la matriz.
+// CU-12 (usuarios) tiene su propia sección: la tabla la pinta js/usuarios.js.
 
 import { pedir, sesion, cerrarSesion, esGerente, precio, esc } from './api.js';
+import { cargarUsuarios } from './usuarios.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -179,5 +180,5 @@ $('cerrar-sesion').addEventListener('click', () => {
 // --- arranque ------------------------------------------------------------
 
 if (requerirGerente()) {
-  await Promise.all([cargarEstadisticas(), cargarLibros(), cargarCategorias()]);
+  await Promise.all([cargarEstadisticas(), cargarLibros(), cargarCategorias(), cargarUsuarios()]);
 }

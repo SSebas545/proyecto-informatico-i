@@ -8,7 +8,8 @@
 //     node herramientas/prueba-playwright.cjs
 //
 // Verifica: catálogo con libros, filtro por categoría, búsqueda, detalle,
-// login real, agregar al carrito, compra y panel del gerente.
+// login real, agregar al carrito, compra, panel del gerente y la tabla de
+// usuarios de CU-12 (con gerente se ve, con comprador no).
 // Guarda capturas en documentacion/capturas/. Sale con rc=1 si algo falla.
 const path = require('path');
 const fs = require('fs');
@@ -140,8 +141,38 @@ async function main() {
     await pagina.screenshot({ path: path.join(CAPTURAS, '04-panel-gerente.png'), fullPage: true });
     paso(`panel del gerente: ${titulos} títulos, ${filasInventario} filas de inventario`);
 
+    // 9. Tabla de usuarios (CU-12), con la sesión de gerente que quedó abierta.
+    await pagina.waitForFunction(
+      () => document.querySelectorAll('#tabla-usuarios tbody tr').length > 0,
+      null, { timeout: 10000 }
+    );
+    const filasUsuarios = await pagina.locator('#tabla-usuarios tbody tr').count();
+    const selectoresRol = await pagina.locator('#tabla-usuarios tbody select').count();
+    assert.equal(selectoresRol, filasUsuarios, 'cada usuario tiene que tener su selector de rol');
+    await pagina.screenshot({ path: path.join(CAPTURAS, '05-panel-usuarios.png'), fullPage: true });
+    paso(`tabla de usuarios: ${filasUsuarios} filas con selector de rol`);
+
+    // 10. Con sesión de comprador la tabla de usuarios no se pinta ni se ve.
+    // Se cierra la sesión de gerente y se entra con la cuenta de comprador.
+    await pagina.click('#cerrar-sesion');
+    await pagina.waitForURL(/index\.html$/, { timeout: 10000 }).catch(() => {});
+    await pagina.goto(`${BASE}/index.html`, { waitUntil: 'domcontentloaded' });
+    await pagina.click('#enlace-sesion');
+    await esperarVisible(pagina, '#dialogo-sesion');
+    await pagina.fill('#login-email', 'usuario@test.com');
+    await pagina.fill('#login-password', '12345678');
+    await pagina.click('#form-login button[type="submit"]');
+    await esperarVisible(pagina, '#franja-sesion');
+    await pagina.goto(`${BASE}/admin.html`, { waitUntil: 'domcontentloaded' });
+    await esperarVisible(pagina, '#bloqueo');
+    const tablaUsuariosVisible = await pagina.locator('#tabla-usuarios').isVisible();
+    assert.equal(tablaUsuariosVisible, false, 'un comprador no puede ver la tabla de usuarios');
+    const filasComprador = await pagina.locator('#tabla-usuarios tbody tr').count();
+    assert.equal(filasComprador, 0, 'un comprador no debería tener filas pintadas');
+    paso('con sesión de comprador la tabla de usuarios queda oculta');
+
     assert.deepStrictEqual(erroresConsola, [], `errores de consola: ${erroresConsola.join(' | ')}`);
-    console.log(`\n${pasos.length}/8 pasos OK. Capturas en documentacion/capturas/`);
+    console.log(`\n${pasos.length}/10 pasos OK. Capturas en documentacion/capturas/`);
   } finally {
     await navegador.close();
   }
