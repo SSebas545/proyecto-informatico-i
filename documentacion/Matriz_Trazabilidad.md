@@ -15,12 +15,12 @@ Rutas del backend verificadas en `server/index.js`; pantallas en `frontend/`.
 | CU-04 Agregar al carrito | Diálogo de detalle / carrito | `frontend/js/tienda.js` (`agregarAlCarrito`) → `POST /api/carrito/:id` (`index.js:455`) | hecho | Agregar *El principito* sube el contador a 1 y el total a $ 12.000. | Sin sesión se abre el diálogo de acceso; si el stock no alcanza, el backend responde 400 y se muestra el mensaje. |
 | CU-05 Ver carrito | Diálogo *Mi carrito* | `frontend/js/tienda.js` (`cargarCarrito`, `pintarCarrito`) → `GET /api/carrito/:id` (`index.js:418`) | hecho | El carrito lista título, autor, cantidad, subtotal y total. | Sin token la API responde **401** (medido con `curl`) y la vista queda en "Ingresá para usar el carrito". |
 | CU-06 Realizar compra | Diálogo *Mi carrito* | `frontend/js/tienda.js` (`comprar`) → `POST /api/pedidos` (`index.js:582`) | hecho | Confirmar la compra responde "Compra confirmada", descuenta stock y vacía el carrito (transacción con rollback). | Con el carrito vacío el botón está deshabilitado; si el stock cambió, el backend hace rollback y devuelve 400. |
-| CU-07 Ver recomendaciones | — | — | **hueco** | Derivado: se pueden sugerir títulos de la misma categoría del último pedido, sin tabla propia. | No está implementado ni tiene tabla en el ER; se declara como pendiente. |
+| CU-07 Ver recomendaciones | — (sin pantalla: se expone por API) | `GET /api/recomendaciones` (`server/rutas-recomendaciones.js:45`, montado en `index.js:822`) | hecho, **sin tabla propia** | Con compras previas devuelve hasta 6 libros de las categorías de las últimas 4 compras, sin los ya comprados, ordenado por id. | Sin compras previas devuelve `[]` con 200 (no 404); un id manipulado no se interpola: la consulta lo recibe como parámetro y responde igual. |
 | CU-08 Iniciar sesión | Diálogo de acceso | `frontend/js/tienda.js` (`iniciarSesion`) → `POST /api/auth/login` (`index.js:92`) | hecho | `admin@libreria.com` / `12345678` entra y guarda el JWT en `sessionStorage`. | Contraseña incorrecta: 401 y "Credenciales inválidas" en el diálogo, sin cerrar la página. |
 | CU-09 Registrarse | Diálogo de acceso, pestaña *Crear cuenta* | `frontend/js/tienda.js` (`registrarse`) → `POST /api/auth/register` (`index.js:132`) | hecho | Un email nuevo crea el usuario y deja la sesión iniciada. | Email repetido devuelve 409 con el mensaje del backend; contraseña de menos de 6 no pasa la validación del formulario. |
 | CU-10 Gestionar libros (CRUD) | Panel del gerente, Inventario y Alta | `frontend/js/admin.js` (`altaLibro`, `guardarStock`) → `POST/PUT/DELETE /api/libros` (`index.js:273,313,351`) | hecho (alta y edición) | Guardar una fila actualiza el libro y refresca inventario y estadísticas. | Un libro sin título o con precio no numérico responde 400 y se muestra el mensaje. |
 | CU-11 Gestionar stock | Panel, columna Stock | `frontend/js/admin.js` (`guardarStock`) → `PUT /api/libros/:id` (`index.js:313`) | hecho | Cambiar el stock de 3 a 5 y guardar muestra "Stock actualizado a 5". | Stock negativo o decimal: el formulario y el backend lo rechazan. |
-| CU-12 Gestionar usuarios | — | — | **pendiente** | El backend sólo expone `GET/PUT /api/usuario` (el propio perfil): falta el listado de usuarios para el gerente. | No hay pantalla ni endpoint de administración de usuarios; se declara en la defensa. |
+| CU-12 Gestionar usuarios | Panel del gerente, sección *Usuarios* | `frontend/js/usuarios.js` (`cargarUsuarios`) → `GET /api/usuarios` y `PUT /api/usuarios/:id/rol` (`server/rutas-usuarios.js:28,40`, montados en `index.js:819`) | hecho (listar y cambiar rol) | El gerente ve las 2 cuentas con su rol y cambia una a *gerente*: el PUT responde 200 con el usuario releído. | Sin token 401; con rol `usuario` 403; rol inventado o ausente 400; id inexistente 404; y con sesión de comprador la tabla no se pinta. |
 | CU-13 Ver estadísticas | Panel, tarjetas de indicadores | `frontend/js/admin.js` (`cargarEstadisticas`) → `GET /api/estadisticas` (`index.js:677`) | hecho | El panel muestra títulos, con stock, sin stock, stock bajo y ventas. | Sin rol gerente la API responde 403 y el panel muestra el bloqueo con el enlace de acceso. |
 | CU-14 Ver resumen general | Panel, encabezado y tarjetas | `frontend/js/admin.js` → `GET /api/estadisticas` (`index.js:677`) | hecho | Al entrar se ve el resumen del local con la sesión de quien entró. | Sin sesión se muestra "Este panel necesita una sesión de gerente" y no se renderiza nada de gestión. |
 | CU-15 Agregar categorías | Panel, Alta de categoría | `frontend/js/admin.js` (`altaCategoria`) → `POST /api/categorias` (`index.js:383`) | hecho | Crear "Poesía" la agrega a la lista y al alta de libros. | Nombre repetido responde 409 y se muestra el mensaje sin duplicar la fila. |
@@ -30,20 +30,25 @@ Rutas del backend verificadas en `server/index.js`; pantallas en `frontend/`.
 ## Cómo se verifica esta matriz
 
 ```bash
-grep -cE '^\| *CU-[0-9]{2}' documentacion/Matriz_Trazabilidad.md   # 17
-grep -cE '^\| CU-07.*hueco' documentacion/Matriz_Trazabilidad.md    # 1
-grep -cE '^\| CU-12.*pendiente' documentacion/Matriz_Trazabilidad.md # 1
+grep -cE '^\| *CU-[0-9]{2}' documentacion/Matriz_Trazabilidad.md        # 17
+grep -cE '^\| CU-07.*hecho' documentacion/Matriz_Trazabilidad.md        # 1
+grep -cE '^\| CU-12.*hecho' documentacion/Matriz_Trazabilidad.md        # 1
+grep -cE '^\| CU-.*(hueco|pendiente)' documentacion/Matriz_Trazabilidad.md  # 0
 ```
 
-(Medido el 2026-11-12: 17, 1 y 1.)
+(Medido el 2026-11-13: 17, 1, 1 y 0. Los dos CU que estaban sin implementar
+—CU-07 y CU-12— quedaron hechos en esta rama.)
 
 ## Decisiones que se defienden en la oral
 
 1. **CU-07 y CU-17 no llevan tabla.** Son consultas derivadas: recomendaciones
-   por categoría del último pedido y alertas por `libros.stock`. Agregar tablas
-   sería duplicar un dato que ya está y que puede quedar desincronizado.
-2. **CU-12 queda afuera con nombre y apellido.** El sistema tiene dos roles y el
-   gerente puede editar su propio perfil, pero no crear ni borrar usuarios: es
-   la deuda declarada, no un olvido.
+   por las categorías de las últimas 4 compras y alertas por `libros.stock`.
+   Agregar tablas sería duplicar un dato que ya está y que puede quedar
+   desincronizado. Las recomendaciones usan `NOT EXISTS` sobre `pedido_items`
+   en vez de una lista de excluidos, así no hace falta guardar nada.
+2. **CU-12 se resuelve listando y cambiando roles, no con un CRUD completo.**
+   El gerente ve todas las cuentas y cambia su rol entre `usuario` y `gerente`;
+   crear y borrar usuarios sigue fuera del alcance porque afecta pedidos y
+   carritos ya existentes (claves foráneas), y eso se declara en la oral.
 3. **Préstamos** aparecen en la ficha del cliente del relevamiento, pero no
    están entre los 17 CU acordados; no se inventó un CU-18.

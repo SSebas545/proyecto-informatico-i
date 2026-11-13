@@ -6,11 +6,18 @@ Backend Node.js para el sistema de gestión de librería "Los Patismos".
 
 ```
 server/
-├── .env              # Configuración de entorno (DB, JWT, Puerto)
-├── index.js          # Punto de entrada del servidor
-├── database.js       # Conexión y operaciones de base de datos
-└── package.json      # Dependencias del proyecto
+├── .env                # Configuración de entorno (DB, JWT, Puerto)
+├── index.js            # Punto de entrada y rutas generales
+├── database.js         # Conexión y operaciones de base de datos
+├── rutas-usuarios.js   # CU-12: listar usuarios y cambiar rol (sólo gerente)
+├── rutas-recomendaciones.js  # CU-07: sugerencias del cliente
+├── test/               # Pruebas con `npm test` (base de datos simulada)
+└── package.json        # Dependencias del proyecto
 ```
+
+Cada router nuevo se exporta como fábrica —`module.exports =
+(autenticarToken) => router`— y se monta en `index.js` con
+`app.use(require('./rutas-x')(autenticarToken))`, así no duplica el middleware.
 
 ## Dependencias
 
@@ -131,6 +138,19 @@ El servidor correrá en `http://localhost:3000` por defecto.
 |--------|----------|-------------|--------------|
 | GET | `/api/estadisticas` | Estadísticas del sistema | Sí (gerente) |
 
+### Usuarios (Gerente, CU-12)
+
+| Método | Endpoint | Descripción | Requiere Auth |
+|--------|----------|-------------|--------------|
+| GET | `/api/usuarios` | Listar cuentas con su rol | Sí (gerente) |
+| PUT | `/api/usuarios/:id/rol` | Cambiar el rol (`usuario` \| `gerente`) | Sí (gerente) |
+
+### Recomendaciones (CU-07)
+
+| Método | Endpoint | Descripción | Requiere Auth |
+|--------|----------|-------------|--------------|
+| GET | `/api/recomendaciones` | Hasta 6 libros de las categorías de las últimas 4 compras, sin los ya comprados | Sí |
+
 ## Flujo de Trabajo
 
 1. **Usuario se registra o inicia sesión** → Recibe JWT token
@@ -143,7 +163,8 @@ El servidor correrá en `http://localhost:3000` por defecto.
 ## Roles
 
 - **usuario**: Puede buscar libros, ver detalles, agregar al carrito, comprar
-- **gerente**: Todo lo de usuario + CRUD de libros, gestión de usuarios, estadísticas, cambiar passwords
+- **gerente**: Todo lo de usuario + CRUD de libros, listar usuarios y cambiar
+  su rol (`/api/usuarios`), estadísticas, cambiar passwords
 
 ## Desarrollo
 
@@ -152,6 +173,13 @@ El servidor correrá en `http://localhost:3000` por defecto.
 1. Importar el router o agregar nuevas secciones en `index.js`
 2. Usar el middleware `autenticarToken` para rutas protegidas
 3. Verificar roles con `if (req.user.rol !== 'gerente')` cuando sea necesario
+
+### Correr las pruebas
+
+```bash
+cd server
+npm test        # node --test; no necesita MySQL, la base está simulada
+```
 
 ### Probar los endpoints
 

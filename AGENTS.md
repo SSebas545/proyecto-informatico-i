@@ -62,7 +62,9 @@ Antes de tocar diagramas o documentación, leer las notas del vault:
 ## Estado conocido
 
 - CU-07 (recomendaciones) y CU-17 (alertas de stock) no tienen tabla propia: son
-  derivados. CU-12 (gestión de usuarios) no tiene pantalla. Está declarado en
-  `documentacion/Matriz_Trazabilidad.md`.
+  derivados. CU-12 (gestión de usuarios) tiene sección propia en el panel
+  (`frontend/js/usuarios.js`) pero sólo lista y cambia roles: no crea ni borra
+  cuentas. CU-07 se expone por API y todavía no tiene pantalla. Está declarado
+  en `documentacion/Matriz_Trazabilidad.md`.
 - `documentacion/*.drawio` es la fuente; los `.png` y `.svg` se regeneran con
   `herramientas/exportar-diagramas.sh`.
