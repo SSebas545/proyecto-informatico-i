@@ -83,6 +83,9 @@ async function cambiarRol(usuario, selector) {
   // Se limpia el aviso viejo y se bloquea el selector mientras viaja el PUT:
   // si no, un segundo cambio se dispara con la respuesta anterior en vuelo.
   aviso.textContent = '';
+  // Si el intento anterior fallo, la clase 'error' quedaba puesta durante el
+  // vuelo de la peticion nueva.
+  aviso.className = 'mensaje';
   selector.disabled = true;
   try {
     const actualizado = await pedir(`/api/usuarios/${usuario.id}/rol`, {
