@@ -18,8 +18,15 @@ export async function cargarUsuarios() {
   try {
     usuarios = await pedir('/api/usuarios', { conToken: true });
   } catch (error) {
+    // Sin esto el gerente ve la tabla vacía y no sabe si falló o si no hay
+    // usuarios.
     console.error(error);
     cuerpo.textContent = '';
+    const aviso = document.querySelector('#mensaje-usuarios');
+    if (aviso) {
+      aviso.className = 'mensaje error';
+      aviso.textContent = `No se pudieron cargar los usuarios: ${error.message}`;
+    }
     return;
   }
 
@@ -52,18 +59,15 @@ function filaDeUsuario(usuario) {
   }
   selector.value = usuario.rol;
   selector.addEventListener('change', () => cambiarRol(usuario, selector));
-  celdaRol.append(selector);
-  fila.append(celdaRol);
-
-  const acciones = document.createElement('td');
+  // El aviso del cambio vive en la misma celda que el selector: no hay una
+  // cuarta columna con botones.
   const aviso = document.createElement('span');
   aviso.className = 'mensaje';
   aviso.setAttribute('role', 'status');
   aviso.setAttribute('aria-live', 'polite');
-  acciones.append(aviso);
-  fila.append(acciones);
+  celdaRol.append(selector, aviso);
+  fila.append(celdaRol);
 
-  fila.dataset.usuarioId = String(usuario.id);
   return fila;
 }
 

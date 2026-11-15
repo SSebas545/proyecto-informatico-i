@@ -50,19 +50,12 @@ module.exports = (autenticarToken) => {
         return res.status(400).json({ mensaje: 'Rol inválido' });
       }
 
-      const [resultado] = await query('UPDATE usuarios SET rol = ? WHERE id = ?', [rol, id]);
-      // Medido el 2026-11-13 con mysql2: reasignar el mismo rol devuelve
-      // affectedRows 1 y changedRows 0, así que acá 0 es "no existe". Se
-      // confirma con el SELECT de abajo antes de responder 404, por si otra
-      // configuración de conexión devuelve las filas cambiadas.
-      if (resultado.affectedRows === 0) {
-        const [existe] = await query('SELECT id FROM usuarios WHERE id = ?', [id]);
-        if (!existe.length) {
-          return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-        }
-      }
-
-      // El UPDATE no devuelve nombre ni email: se relee la fila.
+      await query('UPDATE usuarios SET rol = ? WHERE id = ?', [rol, id]);
+      // No se mira affectedRows: medido el 2026-11-13 con mysql2, reasignar el
+      // mismo rol devuelve affectedRows 1 y changedRows 0 (depende del flag
+      // CLIENT_FOUND_ROWS de la conexión). La relectura de abajo es la que
+      // decide si el usuario existe, y además es la que trae nombre y email,
+      // que el UPDATE no devuelve.
       const [filas] = await query(`SELECT ${COLUMNAS} FROM usuarios WHERE id = ?`, [id]);
       if (!filas.length) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });

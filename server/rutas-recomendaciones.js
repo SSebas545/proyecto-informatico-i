@@ -9,8 +9,8 @@
 // - El `LIMIT 4` cuenta COMPRAS, no ítems: se eligen primero los pedidos y de
 //   ahí salen las categorías. Si se limitara `pedido_items`, una compra con
 //   varios libros ocuparía varios lugares y dejaría afuera compras más nuevas.
-// - Los dos `LIMIT` van en tablas derivadas: MySQL rechaza `LIMIT` dentro de
-//   un `IN (...)` (error 1235).
+// - El `LIMIT 4` va en una tabla derivada: MySQL rechaza `LIMIT` dentro de un
+//   `IN (...)` (error 1235). El `LIMIT 6` está en la consulta principal.
 // - El id del usuario va siempre como parámetro, dos veces, nunca interpolado.
 //
 // Se arma con la misma fábrica que el router de usuarios: recibe
@@ -25,8 +25,7 @@ const SQL_RECOMENDACIONES = `
    WHERE l.categoria_id IN (
            SELECT DISTINCT l2.categoria_id
              FROM pedido_items pi
-             JOIN pedidos p  ON p.id  = pi.pedido_id
-             JOIN libros  l2 ON l2.id = pi.libro_id
+             JOIN libros l2 ON l2.id = pi.libro_id
             WHERE pi.pedido_id IN (
                     SELECT id FROM (
                       SELECT p2.id

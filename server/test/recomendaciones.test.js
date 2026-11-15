@@ -9,6 +9,13 @@
  *
  * Detalle del banco de pruebas: el hook devuelve [filas, campos] (como mysql2)
  * y por eso "sin resultados" se simula con [[], []] y no con [].
+ *
+ * Ojo con lo que prueban estos casos: la base simulada NO ejecuta SQL, así que
+ * el filtrado y el orden de los libros no se ejercitan acá. Lo que se prueba es
+ * el contrato del endpoint (200 con las filas de la consulta, lista vacía en vez
+ * de 404, una sola consulta, los dos parámetros) y la forma del SQL. La
+ * semántica de la consulta se verificó contra MySQL de verdad en una
+ * transacción deshecha (2026-11-13).
  */
 
 const { test, describe, before, after } = require('node:test');
@@ -41,7 +48,7 @@ describe('CU-07 recomendaciones', () => {
   before(async () => { s = await montarServidor({ query: hook }); });
   after(async () => { await s.cerrar(); });
 
-  test('con compras previas devuelve los libros sugeridos en orden, sin los ya comprados', async () => {
+  test('con compras devuelve 200 con las filas de la sugerencia, una sola consulta y dos parámetros', async () => {
     hook.registros = LIBROS;
     const desde = s.base.llamadas.length;
 
@@ -75,7 +82,7 @@ describe('CU-07 recomendaciones', () => {
     assert.match(sql, /SELECT\s+DISTINCT/i, 'las categorías no tienen que repetirse');
   });
 
-  test('sin compras previas devuelve una lista vacía', async () => {
+  test('sin filas devuelve 200 con lista vacía (nunca 404)', async () => {
     hook.registros = [];
     const r = await pedir(s.url, { ruta: '/api/recomendaciones', token: s.tokenUsuario });
     assert.equal(r.status, 200);

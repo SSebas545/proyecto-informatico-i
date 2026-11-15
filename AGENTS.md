@@ -37,7 +37,7 @@ Login de prueba: `admin@libreria.com` / `12345678` (gerente).
 | `cd server && npm test` | 65/65 tests de la API (medido el 2026-11-13) |
 | `npm run seed` | catálogo con libros, sin duplicar si se repite |
 | `bash herramientas/exportar-diagramas.sh` | PNG + SVG de cada `.drawio` |
-| `NODE_PATH=/usr/lib/node_modules/@playwright/mcp/node_modules node herramientas/prueba-playwright.cjs` | 10 pasos de humo del frontend (requiere el servidor levantado y MySQL) |
+| `NODE_PATH=/usr/lib/node_modules/@playwright/mcp/node_modules node herramientas/prueba-playwright.cjs` | 11 pasos de humo del frontend (requiere el servidor levantado y MySQL) |
 
 ## Reglas del proyecto
 

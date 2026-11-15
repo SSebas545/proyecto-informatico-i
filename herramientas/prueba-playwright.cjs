@@ -152,6 +152,34 @@ async function main() {
     await pagina.screenshot({ path: path.join(CAPTURAS, '05-panel-usuarios.png'), fullPage: true });
     paso(`tabla de usuarios: ${filasUsuarios} filas con selector de rol`);
 
+    // 9b. El cambio de rol tiene que viajar al backend y quedar puesto. Se
+    // cambia la cuenta de comprador a gerente y se la devuelve a usuario, para
+    // que la prueba se pueda correr dos veces con el mismo resultado.
+    const filaComprador = pagina.locator('#tabla-usuarios tbody tr', { hasText: 'usuario@test.com' });
+    const selectorComprador = filaComprador.locator('select');
+    assert.equal(await selectorComprador.inputValue(), 'usuario', 'el comprador debería arrancar como usuario');
+
+    for (const destino of ['gerente', 'usuario']) {
+      const respuesta = pagina.waitForResponse(
+        (r) => r.url().includes('/api/usuarios/') && r.request().method() === 'PUT',
+        { timeout: 10000 }
+      );
+      await selectorComprador.selectOption(destino);
+      const r = await respuesta;
+      assert.equal(r.status(), 200, `el PUT a ${destino} respondió ${r.status()}`);
+      await pagina.waitForFunction(
+        (esperado) => {
+          const fila = [...document.querySelectorAll('#tabla-usuarios tbody tr')]
+            .find((tr) => tr.textContent.includes('usuario@test.com'));
+          return fila && fila.querySelector('select').value === esperado;
+        },
+        destino, { timeout: 10000 }
+      );
+      const aviso = (await filaComprador.locator('.mensaje').textContent())?.trim();
+      assert.equal(aviso, '', `no debería haber aviso de error: ${aviso}`);
+    }
+    paso('cambio de rol de ida y vuelta contra /api/usuarios/:id/rol');
+
     // 10. Con sesión de comprador la tabla de usuarios no se pinta ni se ve.
     // Se cierra la sesión de gerente y se entra con la cuenta de comprador.
     await pagina.click('#cerrar-sesion');
@@ -172,7 +200,7 @@ async function main() {
     paso('con sesión de comprador la tabla de usuarios queda oculta');
 
     assert.deepStrictEqual(erroresConsola, [], `errores de consola: ${erroresConsola.join(' | ')}`);
-    console.log(`\n${pasos.length}/10 pasos OK. Capturas en documentacion/capturas/`);
+    console.log(`\n${pasos.length}/11 pasos OK. Capturas en documentacion/capturas/`);
   } finally {
     await navegador.close();
   }
