@@ -13,7 +13,7 @@ HTML5, CSS3, JavaScript (módulos, sin frameworks), Node.js y MySQL (MariaDB).
 | qué | dónde |
 |---|---|
 | frontend funcional | `frontend/` (`index.html` tienda, `admin.html` panel) |
-| API + base de datos | `server/` (Express 5, 21 rutas, 51 tests) |
+| API + base de datos | `server/` (Express 5, 21 rutas en `index.js` + 3 en routers propios, 65 tests) |
 | wireframes (etapa 2) | `wireframes/` |
 | casos de uso | `casos_de_uso/` |
 | documentación | `documentacion/` (matriz, presupuesto, manual, diagramas) |
