@@ -91,14 +91,19 @@ describe('CU-07 recomendaciones', () => {
 
   test('un id con SQL inyectado no se interpola en la consulta', async () => {
     const payload = "1 OR 1=1";
-    const token = jwt.sign({ id: payload, rol: 'usuario' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const secreto = process.env.JWT_SECRET || 'secreto-de-prueba';
+    const token = jwt.sign({ id: payload, rol: 'usuario' }, secreto, { expiresIn: '1h' });
     hook.registros = [];
     const desde = s.base.llamadas.length;
 
     const r = await pedir(s.url, { ruta: '/api/recomendaciones', token });
 
     assert.equal(r.status, 200, 'nunca 500: el id va como parámetro');
-    const { sql, params } = s.base.llamadas.slice(desde).pop();
+    const llamadas = s.base.llamadas.slice(desde);
+    // Con .pop() directo, una request que no llega a la base daba TypeError en
+    // vez de decir que no hubo consulta.
+    assert.equal(llamadas.length, 1, 'tiene que haber consultado la base una sola vez');
+    const { sql, params } = llamadas[0];
     assert.equal(sql.includes(payload), false, 'el payload no puede aparecer en el SQL');
     assert.deepEqual(params, [payload, payload]);
   });

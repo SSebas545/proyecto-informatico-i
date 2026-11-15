@@ -17,6 +17,12 @@ export async function cargarUsuarios() {
   let usuarios;
   try {
     usuarios = await pedir('/api/usuarios', { conToken: true });
+    // Si la carga anterior habia fallado, el aviso quedo pegado.
+    const aviso = document.querySelector('#mensaje-usuarios');
+    if (aviso) {
+      aviso.textContent = '';
+      aviso.className = 'mensaje';
+    }
   } catch (error) {
     // Sin esto el gerente ve la tabla vacía y no sabe si falló o si no hay
     // usuarios.
@@ -87,10 +93,14 @@ async function cambiarRol(usuario, selector) {
     usuario.rol = actualizado.rol;
     selector.value = actualizado.rol;
     aviso.textContent = '';
+    aviso.className = 'mensaje';
   } catch (error) {
     console.error(error);
     selector.value = anterior;
     aviso.textContent = `${MENSAJE_ERROR}: ${error.message}`;
+    // Sin la clase el aviso sale con el estilo normal y no se distingue de un
+    // mensaje informativo.
+    aviso.className = 'mensaje error';
   } finally {
     selector.disabled = false;
   }

@@ -149,7 +149,9 @@ async function main() {
     const filasUsuarios = await pagina.locator('#tabla-usuarios tbody tr').count();
     const selectoresRol = await pagina.locator('#tabla-usuarios tbody select').count();
     assert.equal(selectoresRol, filasUsuarios, 'cada usuario tiene que tener su selector de rol');
-    await pagina.screenshot({ path: path.join(CAPTURAS, '05-panel-usuarios.png'), fullPage: true });
+    // Captura del bloque de usuarios y no de la pagina entera: la pagina entera
+    // era identica a 04-panel-gerente.png (mismo md5) y no mostraba la tabla.
+    await pagina.locator('#tabla-usuarios').screenshot({ path: path.join(CAPTURAS, '05-panel-usuarios.png') });
     paso(`tabla de usuarios: ${filasUsuarios} filas con selector de rol`);
 
     // 9b. El cambio de rol tiene que viajar al backend y quedar puesto. Se
