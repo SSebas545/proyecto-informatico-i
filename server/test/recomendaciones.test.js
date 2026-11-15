@@ -58,6 +58,23 @@ describe('CU-07 recomendaciones', () => {
     assert.deepEqual(params, [2, 2], 'el id del usuario va parametrizado, dos veces');
   });
 
+  test('el límite de 4 acota compras, no ítems de una misma compra', async () => {
+    hook.registros = [];
+    const desde = s.base.llamadas.length;
+
+    await pedir(s.url, { ruta: '/api/recomendaciones', token: s.tokenUsuario });
+
+    const { sql } = s.base.llamadas.slice(desde)[0];
+    // Si el LIMIT 4 estuviera sobre pedido_items, una compra con varios libros
+    // ocuparía varios lugares y dejaría afuera compras más nuevas.
+    assert.match(
+      sql,
+      /SELECT\s+p2\.id\s+FROM\s+pedidos\s+p2[\s\S]*?LIMIT\s+4/i,
+      `el LIMIT 4 tiene que acotar pedidos distintos: ${sql}`
+    );
+    assert.match(sql, /SELECT\s+DISTINCT/i, 'las categorías no tienen que repetirse');
+  });
+
   test('sin compras previas devuelve una lista vacía', async () => {
     hook.registros = [];
     const r = await pedir(s.url, { ruta: '/api/recomendaciones', token: s.tokenUsuario });

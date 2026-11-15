@@ -70,6 +70,10 @@ function filaDeUsuario(usuario) {
 async function cambiarRol(usuario, selector) {
   const aviso = selector.closest('tr').querySelector('.mensaje');
   const anterior = usuario.rol;
+  // Se limpia el aviso viejo y se bloquea el selector mientras viaja el PUT:
+  // si no, un segundo cambio se dispara con la respuesta anterior en vuelo.
+  aviso.textContent = '';
+  selector.disabled = true;
   try {
     const actualizado = await pedir(`/api/usuarios/${usuario.id}/rol`, {
       metodo: 'PUT',
@@ -83,5 +87,7 @@ async function cambiarRol(usuario, selector) {
     console.error(error);
     selector.value = anterior;
     aviso.textContent = `${MENSAJE_ERROR}: ${error.message}`;
+  } finally {
+    selector.disabled = false;
   }
 }

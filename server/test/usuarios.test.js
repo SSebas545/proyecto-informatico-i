@@ -56,12 +56,14 @@ describe('CU-12 usuarios', () => {
     assert.ok(Array.isArray(r.cuerpo));
     assert.deepEqual(r.cuerpo.map((u) => u.id), [1, 2]);
 
-    // Lo que importa: la consulta no nombra la columna del hash en ningún lado.
+    // Lo que importa: la consulta no nombra la columna del hash en ningún lado
+    // y pide el orden por id (el array podría venir ordenado por casualidad).
     const consultas = s.base.llamadas.slice(desde).map((c) => c.sql);
     assert.ok(consultas.length > 0, 'tiene que haber consultado la base');
     for (const sql of consultas) {
       assert.equal(/password/i.test(sql), false, `el SQL no puede pedir el hash: ${sql}`);
     }
+    assert.match(consultas[0], /ORDER BY\s+id\s+ASC/i, `tiene que ordenar por id: ${consultas[0]}`);
   });
 
   test('PUT sin token responde 401', async () => {
@@ -93,6 +95,14 @@ describe('CU-12 usuarios', () => {
       token: s.tokenGerente,
     });
     assert.equal(r.status, 400);
+  });
+
+  test('PUT con un id que no es número responde 400', async () => {
+    const r = await pedir(s.url, {
+      metodo: 'PUT', ruta: '/api/usuarios/abc/rol', cuerpo: { rol: 'gerente' },
+      token: s.tokenGerente,
+    });
+    assert.equal(r.status, 400, 'un id no numérico no puede llegar a MySQL');
   });
 
   test('PUT sobre un usuario inexistente responde 404 con mensaje', async () => {
