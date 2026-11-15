@@ -106,7 +106,20 @@ async function main() {
     await pagina.fill('#buscador', 'principito');
     await pagina.press('#buscador', 'Enter');
     await esperarLibros(pagina, 'n === 1', 'búsqueda principito');
-    await locVisible(pagina, '#grilla .libro').click();
+
+    // Se compra un libro CON stock, no el primero: la prueba consume una
+    // unidad y con el correr de las corridas el elegido se queda en cero
+    // (medido el 2026-11-15: "El Principito" llegó a 0 y el botón salía
+    // deshabilitado). El stock se repone al final del paso 7.
+    await pagina.fill('#buscador', '');
+    await pagina.press('#buscador', 'Enter');
+    await esperarLibros(pagina, 'n > 0', 'catálogo sin filtro');
+    const libroComprado = await pagina.evaluate(async () => {
+      const libros = await (await fetch('/api/libros')).json();
+      return libros.find((l) => Number(l.stock) > 0) || null;
+    });
+    assert.ok(libroComprado, 'ningún libro tiene stock: corré `npm run seed`');
+    await locVisible(pagina, `#grilla .libro[data-id="${libroComprado.id}"]`).click();
     await esperarVisible(pagina, '#dialogo-detalle');
     await pagina.click('#detalle-agregar');
     await pagina.waitForFunction(
@@ -127,6 +140,32 @@ async function main() {
       null, { timeout: 10000 }
     );
     paso('compra confirmada contra /api/pedidos');
+
+    // La compra bajó el stock: se repone con la cuenta de gerente para que la
+    // prueba se pueda correr muchas veces sin vaciar el catálogo.
+    const repuesto = await pagina.evaluate(async (libro) => {
+      const login = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'admin@libreria.com', password: '12345678' })
+      });
+      if (!login.ok) return `login de gerente: ${login.status}`;
+      const { token } = await login.json();
+      const respuesta = await fetch(`/api/libros/${libro.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          titulo: libro.titulo,
+          autor: libro.autor,
+          descripcion: libro.descripcion,
+          precio: Number(libro.precio),
+          stock: Number(libro.stock),
+          categoria_id: libro.categoria_id
+        })
+      });
+      return respuesta.ok ? '' : `PUT del stock: ${respuesta.status}`;
+    }, libroComprado);
+    assert.strictEqual(repuesto, '', `no se pudo reponer el stock: ${repuesto}`);
 
     // 8. Panel del gerente (CU-13, CU-14, CU-17)
     await pagina.goto(`${BASE}/admin.html`, { waitUntil: 'domcontentloaded' });
