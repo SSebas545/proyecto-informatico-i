@@ -13,7 +13,7 @@ HTML5, CSS3, JavaScript (módulos, sin frameworks), Node.js y MySQL (MariaDB).
 | qué | dónde |
 |---|---|
 | frontend funcional | `frontend/` (`index.html` tienda, `admin.html` panel) |
-| API + base de datos | `server/` (Express 5, 21 rutas, 51 tests) |
+| API + base de datos | `server/` (Express 5, 21 rutas en `index.js` + 3 en routers propios, 65 tests) |
 | wireframes (etapa 2) | `wireframes/` |
 | casos de uso | `casos_de_uso/` |
 | documentación | `documentacion/` (matriz, presupuesto, manual, diagramas) |
@@ -34,10 +34,10 @@ Login de prueba: `admin@libreria.com` / `12345678` (gerente).
 
 | comando | qué prueba |
 |---|---|
-| `cd server && npm test` | 51/51 tests de la API |
+| `cd server && npm test` | 65/65 tests de la API (medido el 2026-11-13) |
 | `npm run seed` | catálogo con libros, sin duplicar si se repite |
 | `bash herramientas/exportar-diagramas.sh` | PNG + SVG de cada `.drawio` |
-| `NODE_PATH=/usr/lib/node_modules/@playwright/mcp/node_modules node herramientas/prueba-playwright.cjs` | 8 pasos de humo del frontend (requiere el servidor levantado) |
+| `NODE_PATH=/usr/lib/node_modules/@playwright/mcp/node_modules node herramientas/prueba-playwright.cjs` | 11 pasos de humo del frontend (requiere el servidor levantado y MySQL) |
 
 ## Reglas del proyecto
 
@@ -62,7 +62,9 @@ Antes de tocar diagramas o documentación, leer las notas del vault:
 ## Estado conocido
 
 - CU-07 (recomendaciones) y CU-17 (alertas de stock) no tienen tabla propia: son
-  derivados. CU-12 (gestión de usuarios) no tiene pantalla. Está declarado en
-  `documentacion/Matriz_Trazabilidad.md`.
+  derivados. CU-12 (gestión de usuarios) tiene sección propia en el panel
+  (`frontend/js/usuarios.js`) pero sólo lista y cambia roles: no crea ni borra
+  cuentas. CU-07 se expone por API y todavía no tiene pantalla. Está declarado
+  en `documentacion/Matriz_Trazabilidad.md`.
 - `documentacion/*.drawio` es la fuente; los `.png` y `.svg` se regeneran con
   `herramientas/exportar-diagramas.sh`.

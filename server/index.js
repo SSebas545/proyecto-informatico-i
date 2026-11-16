@@ -814,6 +814,13 @@ app.put('/api/gerente/cambiar-password', autenticarToken, async (req, res) => {
   }
 });
 
+// Administración de usuarios (CU-12). El router se arma con la fábrica para
+// recibir el middleware de autenticación que ya está definido arriba.
+app.use(require('./rutas-usuarios')(autenticarToken));
+
+// Recomendaciones del cliente (CU-07). Misma fábrica: recibe el middleware.
+app.use(require('./rutas-recomendaciones')(autenticarToken));
+
 // Frontend estático (etapa 3). Se sirve desde el mismo origen que la API, así
 // el navegador no necesita CORS ni un segundo servidor. Va después de las
 // rutas /api: una petición a la API nunca cae acá.

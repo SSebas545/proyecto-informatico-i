@@ -8,7 +8,8 @@
 //     node herramientas/prueba-playwright.cjs
 //
 // Verifica: catálogo con libros, filtro por categoría, búsqueda, detalle,
-// login real, agregar al carrito, compra y panel del gerente.
+// login real, agregar al carrito, compra, panel del gerente y la tabla de
+// usuarios de CU-12 (con gerente se ve, con comprador no).
 // Guarda capturas en documentacion/capturas/. Sale con rc=1 si algo falla.
 const path = require('path');
 const fs = require('fs');
@@ -105,7 +106,20 @@ async function main() {
     await pagina.fill('#buscador', 'principito');
     await pagina.press('#buscador', 'Enter');
     await esperarLibros(pagina, 'n === 1', 'búsqueda principito');
-    await locVisible(pagina, '#grilla .libro').click();
+
+    // Se compra un libro CON stock, no el primero: la prueba consume una
+    // unidad y con el correr de las corridas el elegido se queda en cero
+    // (medido el 2026-11-15: "El Principito" llegó a 0 y el botón salía
+    // deshabilitado). El stock se repone al final del paso 7.
+    await pagina.fill('#buscador', '');
+    await pagina.press('#buscador', 'Enter');
+    await esperarLibros(pagina, 'n > 0', 'catálogo sin filtro');
+    const libroComprado = await pagina.evaluate(async () => {
+      const libros = await (await fetch('/api/libros')).json();
+      return libros.find((l) => Number(l.stock) > 0) || null;
+    });
+    assert.ok(libroComprado, 'ningún libro tiene stock: corré `npm run seed`');
+    await locVisible(pagina, `#grilla .libro[data-id="${libroComprado.id}"]`).click();
     await esperarVisible(pagina, '#dialogo-detalle');
     await pagina.click('#detalle-agregar');
     await pagina.waitForFunction(
@@ -127,6 +141,32 @@ async function main() {
     );
     paso('compra confirmada contra /api/pedidos');
 
+    // La compra bajó el stock: se repone con la cuenta de gerente para que la
+    // prueba se pueda correr muchas veces sin vaciar el catálogo.
+    const repuesto = await pagina.evaluate(async (libro) => {
+      const login = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'admin@libreria.com', password: '12345678' })
+      });
+      if (!login.ok) return `login de gerente: ${login.status}`;
+      const { token } = await login.json();
+      const respuesta = await fetch(`/api/libros/${libro.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          titulo: libro.titulo,
+          autor: libro.autor,
+          descripcion: libro.descripcion,
+          precio: Number(libro.precio),
+          stock: Number(libro.stock),
+          categoria_id: libro.categoria_id
+        })
+      });
+      return respuesta.ok ? '' : `PUT del stock: ${respuesta.status}`;
+    }, libroComprado);
+    assert.strictEqual(repuesto, '', `no se pudo reponer el stock: ${repuesto}`);
+
     // 8. Panel del gerente (CU-13, CU-14, CU-17)
     await pagina.goto(`${BASE}/admin.html`, { waitUntil: 'domcontentloaded' });
     await pagina.waitForFunction(
@@ -140,8 +180,68 @@ async function main() {
     await pagina.screenshot({ path: path.join(CAPTURAS, '04-panel-gerente.png'), fullPage: true });
     paso(`panel del gerente: ${titulos} títulos, ${filasInventario} filas de inventario`);
 
+    // 9. Tabla de usuarios (CU-12), con la sesión de gerente que quedó abierta.
+    await pagina.waitForFunction(
+      () => document.querySelectorAll('#tabla-usuarios tbody tr').length > 0,
+      null, { timeout: 10000 }
+    );
+    const filasUsuarios = await pagina.locator('#tabla-usuarios tbody tr').count();
+    const selectoresRol = await pagina.locator('#tabla-usuarios tbody select').count();
+    assert.equal(selectoresRol, filasUsuarios, 'cada usuario tiene que tener su selector de rol');
+    // Captura del bloque de usuarios y no de la pagina entera: la pagina entera
+    // era identica a 04-panel-gerente.png (mismo md5) y no mostraba la tabla.
+    await pagina.locator('#tabla-usuarios').screenshot({ path: path.join(CAPTURAS, '05-panel-usuarios.png') });
+    paso(`tabla de usuarios: ${filasUsuarios} filas con selector de rol`);
+
+    // 9b. El cambio de rol tiene que viajar al backend y quedar puesto. Se
+    // cambia la cuenta de comprador a gerente y se la devuelve a usuario, para
+    // que la prueba se pueda correr dos veces con el mismo resultado.
+    const filaComprador = pagina.locator('#tabla-usuarios tbody tr', { hasText: 'usuario@test.com' });
+    const selectorComprador = filaComprador.locator('select');
+    assert.equal(await selectorComprador.inputValue(), 'usuario', 'el comprador debería arrancar como usuario');
+
+    for (const destino of ['gerente', 'usuario']) {
+      const respuesta = pagina.waitForResponse(
+        (r) => r.url().includes('/api/usuarios/') && r.request().method() === 'PUT',
+        { timeout: 10000 }
+      );
+      await selectorComprador.selectOption(destino);
+      const r = await respuesta;
+      assert.equal(r.status(), 200, `el PUT a ${destino} respondió ${r.status()}`);
+      await pagina.waitForFunction(
+        (esperado) => {
+          const fila = [...document.querySelectorAll('#tabla-usuarios tbody tr')]
+            .find((tr) => tr.textContent.includes('usuario@test.com'));
+          return fila && fila.querySelector('select').value === esperado;
+        },
+        destino, { timeout: 10000 }
+      );
+      const aviso = (await filaComprador.locator('.mensaje').textContent())?.trim();
+      assert.equal(aviso, '', `no debería haber aviso de error: ${aviso}`);
+    }
+    paso('cambio de rol de ida y vuelta contra /api/usuarios/:id/rol');
+
+    // 10. Con sesión de comprador la tabla de usuarios no se pinta ni se ve.
+    // Se cierra la sesión de gerente y se entra con la cuenta de comprador.
+    await pagina.click('#cerrar-sesion');
+    await pagina.waitForURL(/index\.html$/, { timeout: 10000 }).catch(() => {});
+    await pagina.goto(`${BASE}/index.html`, { waitUntil: 'domcontentloaded' });
+    await pagina.click('#enlace-sesion');
+    await esperarVisible(pagina, '#dialogo-sesion');
+    await pagina.fill('#login-email', 'usuario@test.com');
+    await pagina.fill('#login-password', '12345678');
+    await pagina.click('#form-login button[type="submit"]');
+    await esperarVisible(pagina, '#franja-sesion');
+    await pagina.goto(`${BASE}/admin.html`, { waitUntil: 'domcontentloaded' });
+    await esperarVisible(pagina, '#bloqueo');
+    const tablaUsuariosVisible = await pagina.locator('#tabla-usuarios').isVisible();
+    assert.equal(tablaUsuariosVisible, false, 'un comprador no puede ver la tabla de usuarios');
+    const filasComprador = await pagina.locator('#tabla-usuarios tbody tr').count();
+    assert.equal(filasComprador, 0, 'un comprador no debería tener filas pintadas');
+    paso('con sesión de comprador la tabla de usuarios queda oculta');
+
     assert.deepStrictEqual(erroresConsola, [], `errores de consola: ${erroresConsola.join(' | ')}`);
-    console.log(`\n${pasos.length}/8 pasos OK. Capturas en documentacion/capturas/`);
+    console.log(`\n${pasos.length}/11 pasos OK. Capturas en documentacion/capturas/`);
   } finally {
     await navegador.close();
   }

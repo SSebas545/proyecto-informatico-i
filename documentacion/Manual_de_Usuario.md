@@ -112,6 +112,19 @@ Completar título, autor, precio, stock, categoría y (opcional) descripción.
 Escribir el nombre y **Agregar categoría**. Queda disponible en el alta de
 libros y en el filtro del catálogo. No se permiten nombres repetidos.
 
+### 3.6 Usuarios y roles
+
+La sección **Usuarios** lista todas las cuentas con su nombre, email y rol. El
+selector de la columna *Rol* cambia la cuenta entre **usuario** (comprador) y
+**gerente** (administra el local); el cambio se guarda al instante y, si la API
+lo rechaza, el selector vuelve al rol anterior y aparece el motivo.
+
+Sólo ve esta sección quien entró como gerente. Con una sesión de comprador el
+panel entero queda bloqueado y la tabla ni se dibuja.
+
+No se pueden crear ni borrar cuentas desde el panel: cada persona se registra
+sola y las cuentas con pedidos no se borran para no romper el historial.
+
 ## 4. Problemas frecuentes
 
 | síntoma | causa probable | qué hacer |
@@ -121,12 +134,16 @@ libros y en el filtro del catálogo. No se permiten nombres repetidos.
 | "Credenciales inválidas" | Email o contraseña incorrectos | Revisar mayúsculas; usar los usuarios de prueba de la sección 1 |
 | La sesión se cierra sola | El token vence a las 24 h, o se cerró la pestaña | Volver a ingresar |
 | El panel dice "necesita una sesión de gerente" | Se entró con un usuario comprador | Cerrar sesión e ingresar como `admin@libreria.com` |
+| El selector de rol vuelve atrás solo | El backend rechazó el cambio (token vencido o sesión de comprador) | Volver a ingresar como gerente y reintentar |
 
 ## 5. Qué queda afuera de esta versión
 
-- **Gestión de usuarios (CU-12)**: el gerente no puede crear ni borrar usuarios
-  desde el panel; cada uno se registra solo.
-- **Recomendaciones (CU-07)**: no hay sección de sugerencias.
+- **Alta y baja de usuarios (CU-12)**: el gerente lista y cambia roles, pero no
+  crea ni borra cuentas; cada uno se registra solo y borrar una cuenta con
+  pedidos rompería el historial.
+- **Recomendaciones (CU-07)**: el endpoint `GET /api/recomendaciones` devuelve
+  hasta 6 libros de las categorías de las últimas compras, sin los ya
+  comprados, pero todavía no hay una sección en la tienda que los muestre.
 - **Préstamos**: se mencionan en el relevamiento, pero no están entre los 17
   casos de uso acordados.
 
